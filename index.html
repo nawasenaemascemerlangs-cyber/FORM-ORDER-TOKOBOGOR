@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Form Order Bordir (Final)</title>
+    <style>
+        /* CSS - Tampilan Cantik & Rapi */
+        body { font-family: sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background-color: #f0f2f5; }
+        .container { background: white; padding: 20px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        h2 { text-align: center; color: #333; border-bottom: 2px solid #007bff; padding-bottom: 10px; }
+        
+        label { font-weight: bold; display: block; margin-top: 15px; color: #555; }
+        input, select { width: 100%; padding: 12px; margin-top: 5px; box-sizing: border-box; border: 1px solid #ccc; border-radius: 5px; font-size: 16px; }
+        
+        /* Warna khusus kolom keterangan agar terlihat beda */
+        #ket { background-color: #fffff0; border: 1px solid #e0e000; }
+        
+        button { cursor: pointer; padding: 12px; border: none; border-radius: 5px; font-size: 16px; font-weight: bold; width: 100%; }
+        .btn-add { background-color: #007bff; color: white; margin-top: 20px; }
+        .btn-add:hover { background-color: #0056b3; }
+        
+        .btn-checkout { background-color: #28a745; color: white; margin-top: 30px; font-size: 18px; padding: 15px; }
+        .btn-checkout:hover { background-color: #218838; }
+        
+        .btn-delete { background-color: #dc3545; color: white; width: auto; padding: 5px 10px; font-size: 14px; }
+        
+        table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+        th, td { border-bottom: 1px solid #ddd; padding: 10px; text-align: left; vertical-align: top; }
+        th { background-color: #f8f9fa; }
+        
+        /* Gaya teks untuk keterangan di dalam tabel */
+        .small-note { display: block; font-size: 13px; color: #d35400; font-style: italic; margin-top: 3px; }
+        
+        .total-area { margin-top: 20px; text-align: right; font-weight: bold; font-size: 18px; }
+        
+        #loading { display: none; position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(255,255,255,0.9); text-align: center; padding-top: 50vh; font-size: 20px; z-index: 9999; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Formulir Order Bordir</h2>
+    
+    <label>Nama Pemesan:</label>
+    <input type="text" id="nama" placeholder="Nama Lengkap Anda">
+
+    <label>Nomor WA (Awali 62):</label>
+    <input type="number" id="wa" placeholder="Contoh: 628123456789">
+
+    <hr style="margin-top: 25px; border: 0; border-top: 1px dashed #ccc;">
+
+    <div style="background-color: #f9f9f9; padding: 15px; border-radius: 8px; margin-top:10px;">
+        <label>1. Pilih Barang:</label>
+        <select id="produk">
+            <option value="0" disabled selected>-- Pilih Item Disini --</option>
+            <option value="10000|1 pcs Nama Osis">1 pcs Nama Osis - Rp. 10.000</option>
+            <option value="15000|2 pcs Nama Osis">2 pcs Nama Osis - Rp. 15.000</option>
+            <option value="25000|3 pcs Nama Osis">3 pcs Nama Osis - Rp. 25.000</option>
+            <option value="30000|4 pcs Nama Osis">4 pcs Nama Osis - Rp. 30.000</option>
+            <option value="20000|1 pcs Nama Osis & 1 pcs Nama pramuka">1 pcs Nama Osis & 1 pcs Nama pramuka - Rp. 20.000</option>
+            <option value="25000|2 pcs Nama Osis & 1 pcs Nama pramuka">2 pcs Nama Osis & 1 pcs Nama pramuka - Rp. 25.000</option>
+            <option value="30000|2 pcs Nama Osis & 2 pcs Nama pramuka">2 pcs Nama Osis & 2 pcs Nama pramuka - Rp. 30.000</option>
+            <option value="35000|3 pcs Nama Osis & 1 pcs Nama pramuka">3 pcs Nama Osis & 1 pcs Nama pramuka - Rp. 35.000</option>
+            <option value="40000|3 pcs Nama Osis & 2 pcs Nama pramuka">3 pcs Nama Osis & 2 pcs Nama pramuka - Rp. 40.000</option>
+            <option value="10000|1 pcs Nama pramuka">1 pcs Nama pramuka - Rp. 10.000</option>
+            <option value="15000|2 pcs Nama pramuka">2 pcs Nama pramuka - Rp. 15.000</option>
+            <option value="10000|1 pcs Lokasi osis sekolah">1 pcs Lokasi osis sekolah - Rp. 10.000</option>
+            <option value="15000|2 pcs Lokasi osis sekolah">2 pcs Lokasi osis sekolah - Rp. 15.000</option>
+            <option value="10000|1 pcs Lokasi pramuka">1 pcs Lokasi pramuka - Rp. 10.000</option>
+            <option value="15000|2 pcs Lokasi pramuka">2 pcs Lokasi pramuka - Rp. 15.000</option>
+            <option value="10000|1 pcs Lokasi KELAS Osis">1 pcs Lokasi KELAS Osis - Rp. 10.000</option>
+            <option value="15000|2 pcs Lokasi KELAS Osis">2 pcs Lokasi KELAS Osis - Rp. 15.000</option>
+            <option value="10000|1 pcs Lokasi KELAS Pramuka">1 pcs Lokasi KELAS Pramuka - Rp. 10.000</option>
+            <option value="15000|2 pcs Lokasi KELAS Pramuka">2 pcs Lokasi KELAS Pramuka - Rp. 15.000</option>
+            <option value="15000|1 pcs AMBALAN Pramuka">1 pcs AMBALAN Pramuka - Rp. 15.000</option>
+            <option value="30000|2 pcs AMBALAN Pramuka">2 pcs AMBALAN Pramuka - Rp. 30.000</option>
+            <option value="10000|1 pcs GUDEP">1 pcs GUDEP - Rp. 10.000</option>
+            <option value="15000|2 pcs GUDEP">2 pcs GUDEP - Rp. 15.000</option>
+	    <option value="50000|1 pcs NAMA KUNINGAN KANCING">1 pcs NAMA KUNINGAN KANCING - Rp. 50.000</option>
+	    <option value="50000|1 pcs NAMA KUNINGAN MAGNET">1 pcs NAMA KUNINGAN MAGNET - Rp. 50.000</option>
+	    <option value="50000|1 pcs NAMA GRAFIR RESIN MAGNET">1 pcs NAMA GRAFIR RESIN MAGNET - Rp. 50.000</option>
+	    <option value="50000|1 pcs NAMA GRAFIR RESIN KANCING">1 pcs NAMA GRAFIR RESIN KANCING - Rp. 50.000</option> 
+            <option value="50000|1 pcs NAMA GRAFIR BIASA MAGNET">1 pcs NAMA GRAFIR BIASA MAGNET - Rp. 50.000</option>
+	    <option value="50000|1 pcs NAMA GRAFIR BIASA KANCING">1 pcs NAMA GRAFIR BIASA KANCING - Rp. 50.000</option>
+        </select>
+
+        <label>2. Tulis Keterangan (Wajib diisi/strip):</label>
+        <input type="text" id="ket" maxlength="100" placeholder="Contoh: Nama 'INDRA', Kain Keras">
+        <small style="color:#888; float:right;" id="charCount">0/100</small>
+        <div style="clear:both;"></div>
+
+        <button class="btn-add" onclick="aksiTambah()">+ MASUKKAN KERANJANG</button>
+    </div>
+
+    <h3 style="margin-top:30px;">Keranjang Belanja</h3>
+    <div id="list-keranjang">
+        <p style="text-align:center; color:#999; font-style:italic;">Belum ada barang.</p>
+    </div>
+
+    <div class="total-area">
+        <div>Total Qty: <span id="t-qty">0</span></div>
+        <div>Total Harga: Rp. <span id="t-harga">0</span></div>
+    </div>
+
+    <button class="btn-checkout" onclick="aksiKirim()">KIRIM PESANAN VIA WA</button>
+</div>
+
+<div id="loading">Sedang Memproses...</div>
+
+<script>
+    // --- PENGATURAN ---
+    // GANTI URL DI BAWAH INI DENGAN URL GOOGLE SCRIPT ANDA
+    const scriptURL = 'https://script.google.com/macros/s/AKfycbxTUVk6q4Lq_LQh_aUjETsxWi0PxOardTfPueJEoq44B_w94BnprsWIv0EA3obWqqGDlQ/exec'; 
+    const adminWA = '6282130909599';
+    // ------------------
+
+    let keranjang = [];
+
+    // Update hitungan karakter
+    document.getElementById('ket').addEventListener('input', function(e) {
+        document.getElementById('charCount').innerText = e.target.value.length + "/100";
+    });
+
+    function formatDuit(x) {
+        return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+    }
+
+    function aksiTambah() {
+        // 1. Ambil Elemen
+        let selProduk = document.getElementById('produk');
+        let inpKet = document.getElementById('ket');
+        
+        // 2. Cek Validasi
+        let valProduk = selProduk.value;
+        if (valProduk === "0") {
+            alert("Pilih barang dulu bos!");
+            return;
+        }
+
+        // 3. Pecah Data Harga|Nama
+        let pisah = valProduk.split('|');
+        let hargaBarang = parseInt(pisah[0]);
+        let namaBarang = pisah[1];
+        
+        // 4. Ambil Keterangan (Kalau kosong dikasih "-")
+        let teksKet = inpKet.value;
+        if(teksKet.trim() === "") {
+            teksKet = "-";
+        }
+
+        // 5. Masukkan ke Array Keranjang
+        keranjang.push({
+            nama: namaBarang,
+            harga: hargaBarang,
+            ket: teksKet
+        });
+
+        // 6. Update Tampilan HTML
+        updateTampilanKeranjang();
+
+        // 7. Reset Inputan
+        selProduk.value = "0";
+        inpKet.value = "";
+        document.getElementById('charCount').innerText = "0/100";
+    }
+
+    function hapusBaris(indeks) {
+        keranjang.splice(indeks, 1);
+        updateTampilanKeranjang();
+    }
+
+    function updateTampilanKeranjang() {
+        let wadah = document.getElementById('list-keranjang');
+        let labelQty = document.getElementById('t-qty');
+        let labelHarga = document.getElementById('t-harga');
+
+        if (keranjang.length === 0) {
+            wadah.innerHTML = '<p style="text-align:center; color:#999; font-style:italic;">Belum ada barang.</p>';
+            labelQty.innerText = "0";
+            labelHarga.innerText = "0";
+            return;
+        }
+
+        let tabelHTML = '<table><tr><th>Barang & Ket</th><th>Harga</th><th>Hapus</th></tr>';
+        let totalDuit = 0;
+
+        // Loop data keranjang
+        for (let i = 0; i < keranjang.length; i++) {
+            let item = keranjang[i];
+            tabelHTML += `
+                <tr>
+                    <td>
+                        <b>${item.nama}</b><br>
+                        <span class="small-note">Ket: ${item.ket}</span>
+                    </td>
+                    <td>Rp. ${formatDuit(item.harga)}</td>
+                    <td><button class="btn-delete" onclick="hapusBaris(${i})">X</button></td>
+                </tr>
+            `;
+            totalDuit += item.harga;
+        }
+
+        tabelHTML += '</table>';
+        wadah.innerHTML = tabelHTML;
+        
+        labelQty.innerText = keranjang.length;
+        labelHarga.innerText = formatDuit(totalDuit);
+    }
+
+    function aksiKirim() {
+        let nama = document.getElementById('nama').value;
+        let wa = document.getElementById('wa').value;
+
+        if(nama == "" || wa == "") {
+            alert("Nama dan Nomor WA wajib diisi!");
+            return;
+        }
+        if(keranjang.length == 0) {
+            alert("Keranjang masih kosong!");
+            return;
+        }
+
+        document.getElementById('loading').style.display = "block";
+
+        // Siapkan Data untuk dikirim
+        let totalH = document.getElementById('t-harga').innerText.replace(/\./g,'');
+        let totalQ = keranjang.length;
+        let detailStr = "";
+
+        for (let i = 0; i < keranjang.length; i++) {
+            detailStr += `${i+1}. ${keranjang[i].nama}\n   (Ket: ${keranjang[i].ket}) - Rp.${formatDuit(keranjang[i].harga)}\n`;
+        }
+
+        // Kirim ke Google Sheet
+        let dataForm = new FormData();
+        dataForm.append('nama', nama);
+        dataForm.append('wa', wa);
+        dataForm.append('detail', detailStr);
+        dataForm.append('qty', totalQ);
+        dataForm.append('harga', totalH);
+
+        fetch(scriptURL, { method: 'POST', body: dataForm })
+            .then(res => {
+                document.getElementById('loading').style.display = "none";
+                bukaWA(nama, wa, detailStr, totalQ, totalH);
+            })
+            .catch(err => {
+                document.getElementById('loading').style.display = "none";
+                alert("Gagal simpan database, lanjut ke WA saja.");
+                bukaWA(nama, wa, detailStr, totalQ, totalH);
+            });
+    }
+
+    function bukaWA(nama, wa, detail, qty, duit) {
+        let pesan = `*ORDER BORDIR BARU*\n\n` +
+                    `Nama: ${nama}\n` +
+                    `HP: ${wa}\n\n` +
+                    `*Pesanan:*\n${detail}\n` +
+                    `------------------\n` +
+                    `*Total Item:* ${qty}\n` +
+                    `*Total Bayar:* Rp. ${duit}`;
+        
+        let link = `https://wa.me/${adminWA}?text=${encodeURIComponent(pesan)}`;
+        window.location.href = link;
+    }
+</script>
+
+</body>
+</html>
