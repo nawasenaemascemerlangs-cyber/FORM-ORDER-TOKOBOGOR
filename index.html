@@ -3,7 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Form Order Bordir (Revisi)</title>
+    <title>Form Order Bordir (Smart Search)</title>
+    
+    <link href="https://cdn.jsdelivr.net/npm/tom-select@2.2.2/dist/css/tom-select.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/tom-select@2.2.2/dist/js/tom-select.complete.min.js"></script>
+
     <style>
         /* CSS - Tampilan Cantik & Rapi */
         body { font-family: sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background-color: #f0f2f5; }
@@ -35,6 +39,10 @@
         .total-area { margin-top: 20px; text-align: right; font-weight: bold; font-size: 18px; }
         
         #loading { display: none; position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(255,255,255,0.9); text-align: center; padding-top: 50vh; font-size: 20px; z-index: 9999; }
+
+        /* Perbaikan Tampilan Dropdown Pencarian */
+        .ts-control { padding: 12px !important; border-radius: 5px; border: 1px solid #ccc; font-size: 16px; }
+        .ts-dropdown { font-size: 16px; }
     </style>
 </head>
 <body>
@@ -54,9 +62,9 @@
     <hr style="margin-top: 25px; border: 0; border-top: 1px dashed #ccc;">
 
     <div style="background-color: #f9f9f9; padding: 15px; border-radius: 8px; margin-top:10px;">
-        <label>1. Pilih Barang:</label>
-        <select id="produk">
-            <option value="0" disabled selected>-- Pilih Item Disini --</option>
+        <label>1. Cari & Pilih Barang:</label>
+        <select id="produk" placeholder="Ketik nama barang disini...">
+            <option value="">-- Ketik untuk Mencari --</option>
             <option value="10000|1 pcs Nama Osis">1 pcs Nama Osis - Rp. 10.000</option>
             <option value="15000|2 pcs Nama Osis">2 pcs Nama Osis - Rp. 15.000</option>
             <option value="25000|3 pcs Nama Osis">3 pcs Nama Osis - Rp. 25.000</option>
@@ -81,6 +89,12 @@
             <option value="10000|1 pcs GUDEP">1 pcs GUDEP - Rp. 10.000</option>
             <option value="15000|2 pcs GUDEP">2 pcs GUDEP - Rp. 15.000</option>
             
+            <option value="50000|1 pcs NAMA KUNINGAN KANCING">1 pcs NAMA KUNINGAN KANCING - Rp. 50.000</option>
+            <option value="50000|1 pcs NAMA KUNINGAN MAGNET">1 pcs NAMA KUNINGAN MAGNET - Rp. 50.000</option>
+            <option value="50000|1 pcs NAMA GRAFIR RESIN MAGNET">1 pcs NAMA GRAFIR RESIN MAGNET - Rp. 50.000</option>
+            <option value="50000|1 pcs NAMA GRAFIR RESIN KANCING">1 pcs NAMA GRAFIR RESIN KANCING - Rp. 50.000</option> 
+            <option value="50000|1 pcs NAMA GRAFIR BIASA MAGNET">1 pcs NAMA GRAFIR BIASA MAGNET - Rp. 50.000</option>
+            <option value="50000|1 pcs NAMA GRAFIR BIASA KANCING">1 pcs NAMA GRAFIR BIASA KANCING - Rp. 50.000</option>
         </select>
 
         <label>2. Tulis Keterangan (Wajib diisi/strip):</label>
@@ -108,12 +122,23 @@
 
 <script>
     // --- PENGATURAN ---
-    // GANTI URL DI BAWAH INI DENGAN URL GOOGLE SCRIPT TERBARU ANDA
     const scriptURL = 'https://script.google.com/macros/s/AKfycbxTUVk6q4Lq_LQh_aUjETsxWi0PxOardTfPueJEoq44B_w94BnprsWIv0EA3obWqqGDlQ/exec'; 
     const adminWA = '62895405882110';
     // ------------------
 
     let keranjang = [];
+    let selectControl; // Variabel untuk menyimpan kontrol pencarian
+
+    // Inisialisasi Pencarian (Tom Select)
+    document.addEventListener('DOMContentLoaded', function() {
+        selectControl = new TomSelect("#produk",{
+            create: false,
+            sortField: {
+                field: "text",
+                direction: "asc"
+            }
+        });
+    });
 
     // Update hitungan karakter
     document.getElementById('ket').addEventListener('input', function(e) {
@@ -129,7 +154,7 @@
         let inpKet = document.getElementById('ket');
         
         let valProduk = selProduk.value;
-        if (valProduk === "0") {
+        if (valProduk === "" || valProduk === "0") {
             alert("Pilih barang dulu bos!");
             return;
         }
@@ -151,7 +176,9 @@
 
         updateTampilanKeranjang();
 
-        selProduk.value = "0";
+        // Reset Pilihan Barang (Menggunakan perintah khusus Tom Select)
+        selectControl.clear(); 
+        
         inpKet.value = "";
         document.getElementById('charCount').innerText = "0/100";
     }
@@ -201,7 +228,6 @@
     function aksiKirim() {
         let nama = document.getElementById('nama').value;
         let wa = document.getElementById('wa').value;
-        // Ambil Data Penerima
         let penerima = document.getElementById('penerima').value;
 
         if(nama == "" || wa == "") {
@@ -229,7 +255,6 @@
         dataForm.append('detail', detailStr);
         dataForm.append('qty', totalQ);
         dataForm.append('harga', totalH);
-        // Kirim Data Penerima
         dataForm.append('penerima', penerima);
 
         fetch(scriptURL, { method: 'POST', body: dataForm })
